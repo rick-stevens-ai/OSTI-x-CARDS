@@ -43,7 +43,7 @@ Entity + alias resolution (names/tools/datasets) that feeds SuperCard merging.
   - Review articles rendered as primary view (markdown + `[OSTI:id]` citation chips).
   - Durable access-log middleware → `access_log.sqlite`, `/api/access/stats`.
 - **`mcp/mcp_server.py`** — MCP server exposing cards to agents.
-- **Public access** — Tailscale Funnel: `https://m1-mac-mini.tail2cbb22.ts.net` (no VPN). Tailnet: `http://100.86.220.115:8094`.
+- **Public access** — Tailscale Funnel: `https://<tailnet-funnel-host>` (no VPN). Tailnet: `http://<tailnet-host>:8094`.
 - **launchd** service `com.stevens.osti-cards-site` (KeepAlive). Recycle: `launchctl kickstart -k gui/$(id -u)/com.stevens.osti-cards-site`.
 
 ## Quality (v4 rubric)

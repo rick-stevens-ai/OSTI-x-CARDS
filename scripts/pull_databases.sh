@@ -2,7 +2,7 @@
 # Pull the derived SQLite databases needed to SERVE the site.
 # Reads locations from datasets/manifests/db_snapshots.json.
 set -euo pipefail
-SRC_HOST="${OSTI_DB_HOST:-100.86.220.115}"          # m1 tailnet
+SRC_HOST="${OSTI_DB_HOST:-<tailnet-host>}"          # m1 tailnet
 SRC_DIR="${OSTI_DB_DIR:-/Users/stevens/code/osti-cards-site/data}"
 DEST="${1:-web/data}"
 mkdir -p "$DEST"

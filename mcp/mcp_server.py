@@ -2,7 +2,7 @@
 """OSTI x-Cards MCP server — exposes the OSTI-paper-derived x-card corpus to models/agents.
 
 Wraps the SAME SQLite FTS5 index + source-artifact store that powers the website
-(http://100.86.220.115:8094), so MCP tools behave identically to the HTTP API.
+(http://<tailnet-host>:8094), so MCP tools behave identically to the HTTP API.
 mcp SDK 2.x (MCPServer). Transport: streamable-http (network) or stdio (local dev).
 """
 import os, sqlite3, json, re, io, zipfile, base64
@@ -190,10 +190,10 @@ if __name__ == "__main__":
             enable_dns_rebinding_protection=True,
             allowed_hosts=[
                 "127.0.0.1:*", "localhost:*", "[::1]:*",
-                "m1-mac-mini.tail2cbb22.ts.net:8443",
+                "<tailnet-funnel-host>:8443",
             ],
             allowed_origins=[
-                "https://m1-mac-mini.tail2cbb22.ts.net:8443",
+                "https://<tailnet-funnel-host>:8443",
             ],
         )
         app.run(transport=a.transport, host=a.host, port=a.port,

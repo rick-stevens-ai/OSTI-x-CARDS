@@ -2,8 +2,8 @@
   "generated": "2026-10-21T12:26:12Z",
   "note": "Download snapshots from the staging locations below. Large DB (osti_cards) sha omitted \u2014 verify by size+build date. Small DB sha256 computed.",
   "staging": {
-    "tailnet": "m1 100.86.220.115 \u2014 rsync ~/code/osti-cards-site/data/<db>",
-    "public_funnel": "https://m1-mac-mini.tail2cbb22.ts.net (site only, not DB download)"
+    "tailnet": "m1 <tailnet-host> \u2014 rsync ~/code/osti-cards-site/data/<db>",
+    "public_funnel": "https://<tailnet-funnel-host> (site only, not DB download)"
   },
   "databases": {
     "osti_cards.sqlite": {

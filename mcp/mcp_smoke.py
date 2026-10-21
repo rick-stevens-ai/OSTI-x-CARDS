@@ -6,7 +6,8 @@ import asyncio, json, sqlite3, random, sys, os
 from mcp.client.streamable_http import streamable_http_client
 from mcp.client import ClientSession
 
-URL = "http://100.86.220.115:8096/mcp"
+import os
+URL = os.environ.get("OSTI_MCP_URL", "http://127.0.0.1:8096/mcp")
 DB = "/Users/stevens/code/osti-cards-site/data/osti_cards.sqlite"
 random.seed(7)
 
