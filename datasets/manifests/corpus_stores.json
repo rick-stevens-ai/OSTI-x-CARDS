@@ -1,0 +1,32 @@
+{
+  "source_pdf_corpus": {
+    "description": "OSTI full-text PDFs, year-sharded <year>/<osti_id>.pdf",
+    "replicas": [
+      {
+        "host": "m1 (SG-1-8TB external)",
+        "path": "/Volumes/SG-1-8TB/osti/pdfs/",
+        "role": "primary"
+      },
+      {
+        "host": "cels-rbdgx2 (DGX shared /rbstor)",
+        "path": "/rbstor/stevens/osti/",
+        "role": "mirror"
+      },
+      {
+        "host": "Polaris/Eagle",
+        "path": "/eagle/.../osti_marker/",
+        "role": "scratch-staging (purgeable)"
+      }
+    ]
+  },
+  "catalog": {
+    "description": "OSTI catalog SQLite",
+    "host": "m1 (SG-1-8TB)",
+    "path": "/Volumes/SG-1-8TB/osti/catalog/catalog.sqlite",
+    "size": "~1.5GB"
+  },
+  "parsed_md_mmd": {
+    "description": "Marker .md + Nougat .mmd parsed text",
+    "location": "co-located with PDFs; paths in catalog md_path/mmd_path"
+  }
+}

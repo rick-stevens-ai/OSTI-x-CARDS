@@ -1,0 +1,15 @@
+# Data artifacts — never commit (see datasets/)
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+*.pdf
+*.md.bak
+data/
+**/data/
+*.pkl
+__pycache__/
+*.pyc
+.venv/
+.DS_Store
+# large manifest full-files (keep READMEs + small json)
+datasets/manifests/papers_manifest_clean.tsv

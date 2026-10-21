@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OSTI x-Cards · Genesis Mission Corpus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+<style>
+  :root{
+    --bg:#f5f7fa; --canvas:#ffffff; --surface:#eef1f5; --surface-edge:#d7dce3;
+    --blue-50:#eaf4fe; --blue-100:#d4e8fc; --blue-300:#4da3f0; --blue-500:#1a7fee;
+    --blue-600:#1570df; --blue-700:#0f5bc0; --ink:#0a0e14; --ink-2:#39424e; --mut:#6b7684;
+    --doe:#0b1e3f; --line:#e1e6ec; --shadow:0 1px 2px rgba(10,30,70,.06),0 8px 24px rgba(10,30,70,.06);
+    --font:"Inter","Helvetica Neue",Arial,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font:16px/1.55 var(--font);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+
+  /* DOE top banner */
+  .doe{background:var(--doe);color:#cfe0f7;font-size:12px;letter-spacing:.5px;padding:6px 26px;display:flex;justify-content:space-between;align-items:center;}
+  .doe b{color:#fff;font-weight:600;}
+  .doe .seal{width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#8fc0ff,#1a7fee 70%);display:inline-block;margin-right:7px;vertical-align:-3px;}
+
+  /* Masthead */
+  header.mast{background:var(--canvas);border-bottom:1px solid var(--line);padding:22px 26px 0;}
+  .mast-top{display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;}
+  .mast h1{font-size:26px;font-weight:800;letter-spacing:-.4px;margin:0;color:var(--ink);}
+  .mast h1 .lite{font-weight:300;color:var(--blue-600);}
+  .mast .tag{color:var(--mut);font-size:13px;margin-top:3px;font-weight:400;}
+  .mast .brandbar{height:4px;width:64px;background:linear-gradient(90deg,var(--blue-500),var(--blue-300));border-radius:2px;margin-top:14px;}
+
+  /* Hero stat band — Genesis "big numeral" motif */
+  .stats{display:flex;gap:0;flex-wrap:wrap;padding:18px 26px 20px;background:var(--canvas);border-bottom:1px solid var(--line);}
+  .stat{flex:1;min-width:150px;padding:4px 22px;border-left:1px solid var(--line);position:relative;}
+  .stat:first-child{border-left:none;padding-left:0;}
+  .stat .num{font-size:38px;font-weight:300;letter-spacing:-1px;color:var(--blue-600);line-height:1;}
+  .stat .lbl{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--mut);margin-top:6px;font-weight:600;}
+  .stat .tick{position:absolute;left:0;top:-18px;width:1px;height:14px;background:var(--surface-edge);}
+
+  .wrap{display:grid;grid-template-columns:268px 1fr;gap:0;align-items:start;}
+  aside{padding:22px 20px;position:sticky;top:0;}
+  aside h3{font-size:11px;text-transform:uppercase;color:var(--mut);letter-spacing:1px;margin:22px 0 10px;font-weight:700;}
+  aside h3:first-child{margin-top:0;}
+  .facet{display:flex;flex-wrap:wrap;gap:7px;}
+  .chip{font-size:13px;padding:5px 12px;border:1px solid var(--surface-edge);border-radius:7px;cursor:pointer;color:var(--ink-2);background:var(--canvas);transition:all .12s;font-weight:500;}
+  .chip:hover{border-color:var(--blue-300);color:var(--blue-600);}
+  .chip.on{background:var(--blue-500);color:#fff;border-color:var(--blue-500);font-weight:600;box-shadow:0 2px 8px rgba(26,127,238,.28);}
+  .chip .n{color:var(--mut);margin-left:6px;font-size:11px;font-weight:500;}
+  .chip:hover .n{color:var(--blue-500);}
+  .chip.on .n{color:#cfe4ff;}
+
+  main{padding:22px 26px 40px;}
+  .searchbar{display:flex;gap:10px;margin-bottom:16px;}
+  .searchbar input{flex:1;padding:13px 16px;font-size:15px;background:var(--canvas);border:1px solid var(--surface-edge);border-radius:9px;color:var(--ink);box-shadow:var(--shadow);font-family:var(--font);}
+  .searchbar input::placeholder{color:#9aa4b2;}
+  .searchbar input:focus{outline:none;border-color:var(--blue-500);box-shadow:0 0 0 3px var(--blue-50);}
+  button.btn{padding:13px 20px;background:var(--blue-500);color:#fff;border:none;border-radius:9px;font-weight:600;cursor:pointer;font-size:14px;font-family:var(--font);transition:background .12s;}
+  button.btn:hover{background:var(--blue-600);}
+  button.btn.sec{background:var(--canvas);color:var(--blue-600);border:1px solid var(--surface-edge);}
+  button.btn.sec:hover{border-color:var(--blue-500);background:var(--blue-50);}
+  button.btn:disabled{opacity:.45;cursor:default;}
+  a.btn{text-decoration:none;display:inline-block;}
+
+  .meta{color:var(--mut);font-size:13px;margin-bottom:14px;font-weight:500;}
+  #count b{color:var(--ink);font-weight:700;}
+
+  /* Cards — flat geometric with isometric accent edge */
+  .card{position:relative;border:1px solid var(--line);border-radius:11px;padding:16px 18px 16px 22px;margin-bottom:11px;background:var(--canvas);cursor:pointer;box-shadow:var(--shadow);transition:transform .1s,box-shadow .1s,border-color .1s;overflow:hidden;}
+  .card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(180deg,var(--blue-300),var(--blue-500));opacity:.75;}
+  .card:hover{transform:translateY(-1px);box-shadow:0 2px 4px rgba(10,30,70,.08),0 14px 34px rgba(10,30,70,.12);border-color:var(--blue-300);}
+  .card .badges{display:flex;gap:7px;margin-bottom:8px;flex-wrap:wrap;align-items:center;}
+  .badge{font-size:11px;padding:2px 9px;border-radius:6px;background:var(--surface);color:var(--ink-2);font-weight:600;letter-spacing:.2px;}
+  .badge.mode{background:var(--blue-50);color:var(--blue-700);border:1px solid var(--blue-100);text-transform:capitalize;}
+  .badge.osti{background:transparent;color:var(--mut);font-weight:500;}
+  .badge.repo{background:#e6f7ed;color:#137a43;border:1px solid #b7e4c9;}
+  .badge.code{background:#eef0fb;color:#3b3f9e;border:1px solid #c7ccf2;}
+  .badge.qa{text-transform:uppercase;letter-spacing:.3px;}
+  .badge.qa-high{background:#e6f7ed;color:#137a43;border:1px solid #b7e4c9;}
+  .badge.qa-medium{background:#fdf2dc;color:#8a5a00;border:1px solid #f0d49a;}
+  .badge.qa-low{background:var(--surface);color:var(--mut);border:1px solid var(--surface-edge);}
+  .card .t{font-size:16px;font-weight:600;margin-bottom:4px;color:var(--ink);line-height:1.35;}
+  .card .d{color:var(--ink-2);font-size:14px;line-height:1.5;}
+  .card .a{color:var(--mut);font-size:12px;margin-top:8px;}
+
+  .pager{display:flex;gap:12px;align-items:center;margin:20px 0;}
+  .pager span{color:var(--mut);font-size:13px;}
+
+  /* modal */
+  .modal{position:fixed;inset:0;background:rgba(11,30,63,.42);backdrop-filter:blur(3px);display:none;align-items:flex-start;justify-content:center;padding:44px 16px;overflow:auto;z-index:20;}
+  .modal.show{display:flex;}
+  .sheet{background:var(--canvas);border:1px solid var(--line);border-radius:14px;max-width:920px;width:100%;padding:26px 30px 30px;box-shadow:0 24px 70px rgba(10,30,70,.3);}
+  .sheet h2{margin:0 0 8px;font-size:21px;font-weight:700;letter-spacing:-.3px;color:var(--ink);line-height:1.3;}
+  .sheet .sb{display:flex;gap:8px;margin:8px 0 16px;flex-wrap:wrap;}
+  .sheet h3{font-size:11px;text-transform:uppercase;color:var(--mut);letter-spacing:1px;margin:20px 0 10px;font-weight:700;}
+  .sheet pre{background:#0b1220;border:1px solid #16233c;border-radius:10px;padding:16px;overflow:auto;font:12.5px/1.5 "SF Mono",Menlo,monospace;color:#bcd6ff;max-height:54vh;white-space:pre-wrap;word-break:break-word;}
+  .sheet .row{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;}
+  .x{float:right;cursor:pointer;color:var(--mut);font-size:26px;line-height:.7;font-weight:300;}
+  .x:hover{color:var(--ink);}
+  a{color:var(--blue-600);}
+  .srcgrid{display:flex;flex-direction:column;gap:9px;}
+  .srcrow{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:11px 13px;background:var(--surface);border:1px solid var(--line);border-radius:9px;}
+  .srclbl{font-size:13px;font-weight:700;min-width:118px;color:var(--ink);display:flex;align-items:center;gap:7px;}
+  .srclbl .dot{width:8px;height:8px;border-radius:2px;background:var(--blue-500);transform:rotate(45deg);display:inline-block;}
+  a.mini{font-size:12px;padding:4px 11px;border:1px solid var(--blue-300);color:var(--blue-600);border-radius:7px;text-decoration:none;font-weight:500;background:var(--canvas);transition:all .1s;}
+  a.mini:hover{background:var(--blue-500);color:#fff;border-color:var(--blue-500);}
+  .na{font-size:12px;color:var(--mut);font-style:italic;}
+  /* Formatted x-card fields */
+  .xc{border:1px solid var(--line);border-radius:11px;overflow:hidden;background:var(--canvas);}
+  .xc-field{display:grid;grid-template-columns:150px 1fr;gap:14px;padding:11px 15px;border-top:1px solid var(--line);align-items:start;}
+  .xc-field:first-child{border-top:none;}
+  .xc-field:nth-child(even){background:var(--surface);}
+  .xc-k{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--mut);font-weight:700;padding-top:2px;}
+  .xc-v{font-size:14px;color:var(--ink);line-height:1.55;word-break:break-word;}
+  .xc-v ul{margin:0;padding-left:18px;} .xc-v li{margin:2px 0;}
+  .xc-v a{color:var(--blue-600);text-decoration:none;} .xc-v a:hover{text-decoration:underline;}
+  .xc-v .sub{display:block;margin:8px 0 3px;font-weight:600;color:var(--ink-2);font-size:13px;}
+  .xc-v .kv{color:var(--mut);} .xc-v code{background:var(--surface);padding:1px 5px;border-radius:4px;font-size:12.5px;}
+  .xc-empty{color:var(--mut);font-style:italic;}
+  .toggle-raw{font-size:12px;color:var(--blue-600);cursor:pointer;user-select:none;margin-left:8px;font-weight:500;}
+  @media(max-width:560px){.xc-field{grid-template-columns:1fr;gap:3px;}}
+  footer{padding:20px 26px;color:var(--mut);font-size:12px;border-top:1px solid var(--line);background:var(--canvas);}
+  @media(max-width:760px){.wrap{grid-template-columns:1fr;}aside{position:static;border-bottom:1px solid var(--line);}}
+</style>
+</head>
+<body>
+<div class="doe"><span><span class="seal"></span><b>U.S. Department of Energy</b> &nbsp;·&nbsp; Genesis Mission · Scientific Corpus</span><span id="doe-r">OSTI full-text x-Card index</span></div>
+
+<header class="mast">
+  <div class="mast-top">
+    <div style="flex:1;min-width:260px">
+      <h1>OSTI <span class="lite">x-Cards</span></h1>
+      <div class="tag">Structured model · agent · instrument · facility · simulation · workflow · data cards, extracted from the DOE OSTI full-text corpus</div>
+    </div>
+  </div>
+  <div class="brandbar"></div>
+  <div style="padding:8px 0 0"><a href="/" style="display:inline-block;padding:6px 14px;margin-right:6px;border:1px solid #00205b;border-radius:7px;background:#00205b;color:#fff;text-decoration:none;font-size:13px">x-Cards</a><a href="/supercards.html" style="display:inline-block;padding:6px 14px;border:1px solid #e3e3e8;border-radius:7px;color:#111;text-decoration:none;font-size:13px">SuperCards →</a></div>
+</header>
+
+<div class="stats" id="stats"><!-- hero numerals injected --></div>
+
+<div class="wrap">
+  <aside>
+    <h3>Card type</h3>
+    <div class="facet" id="modes"></div>
+    <h3>Publication year</h3>
+    <div class="facet" id="years"></div>
+    <h3>Value-add filters</h3>
+    <div class="facet" id="valuefilters">
+      <button class="chip" id="dataRepoChip" title="Data cards that reference a resolvable data repository (Zenodo, PDB, NCBI, Figshare, DOE data portals, …)">📦 Has data repository</button>
+      <button class="chip" id="codeRepoChip" title="Model / simulation / workflow / agent cards that reference a resolvable code repository (GitHub, GitLab, Bitbucket, PyPI, Zenodo software, Hugging Face, …)">💻 Has code repository</button>
+    </div>
+    <h3>Card quality</h3>
+    <div class="facet" id="qaTiers">
+      <button class="chip" data-qa="HIGH" title="High-quality cards (most complete, strong provenance)">High</button>
+      <button class="chip" data-qa="MEDIUM" title="Medium-quality cards">Medium</button>
+      <button class="chip" data-qa="LOW" title="Lower-quality cards (sparse or weak provenance)">Low</button>
+    </div>
+    <h3>Bulk export</h3>
+    <button class="btn sec" id="bulkBtn" style="width:100%">⬇ Download all matching (.zip)</button>
+    <p class="tag" id="bulkNote" style="margin-top:9px;font-size:12px"></p>
+  </aside>
+  <main>
+    <div class="searchbar">
+      <input id="q" placeholder="Search cards — name, description, author, email, instrument, facility, any field…" autofocus>
+      <button class="btn" id="go">Search</button>
+    </div>
+    <div class="meta"><span id="count"></span></div>
+    <div id="list"></div>
+    <div class="pager" id="pager"></div>
+  </main>
+</div>
+<footer>OSTI x-Cards · served from m1 · real cards only (NO_X_FOUND sentinels excluded) · source artifacts rendered on the pecans farm, served on-demand</footer>
+
+<div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
+
+<script>
+const S = { q:"", mode:"", year:"", data_repo:0, code_repo:0, qa_tier:"", offset:0, limit:50, total:0 };
+const $ = s => document.querySelector(s);
+const esc = s => (s||"").replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt = n => (n||0).toLocaleString();
+
+async function loadStats(){
+  const s = await (await fetch("/api/stats")).json();
+  const years = Object.keys(s.by_year||{}).sort();
+  const yspan = years.length ? `${years[0]}–${years[years.length-1]}` : "—";
+  // hero numerals (Genesis big-stat motif)
+  $("#stats").innerHTML = [
+    ["#stat", fmt(s.total_real), "x-Cards"],
+    ["#stat", fmt(s.distinct_papers || 0) + (s.distinct_papers?"":"—"), "Papers carded"],
+    ["#stat", Object.keys(s.by_mode||{}).length, "Card types"],
+    ["#stat", years.length, "Years covered"],
+    ["#stat", yspan, "Corpus span"],
+  ].map(([_,num,lbl])=>`<div class="stat"><span class="tick"></span><div class="num">${num}</div><div class="lbl">${lbl}</div></div>`).join("");
+  $("#doe-r").textContent = `${fmt(s.total_real)} cards · built ${s.built_at||""}`;
+
+  const modeOrder = ["model","agent","instrument","facility","simulation","workflow","data"];
+  $("#modes").innerHTML = `<button class="chip on" data-m="">All</button>` +
+    modeOrder.filter(m=>s.by_mode[m]).map(m=>`<button class="chip" data-m="${m}">${m}<span class="n">${fmt(s.by_mode[m])}</span></button>`).join("");
+  const yrs = Object.keys(s.by_year).sort().reverse();
+  $("#years").innerHTML = `<button class="chip on" data-y="">All</button>` +
+    yrs.map(y=>`<button class="chip" data-y="${y}">${y}<span class="n">${fmt(s.by_year[y])}</span></button>`).join("");
+  document.querySelectorAll("#modes .chip").forEach(c=>c.onclick=()=>{S.mode=c.dataset.m;S.offset=0;setOn("#modes",c);run();});
+  document.querySelectorAll("#years .chip").forEach(c=>c.onclick=()=>{S.year=c.dataset.y;S.offset=0;setOn("#years",c);run();});
+  const drc=$("#dataRepoChip");
+  if(drc) drc.onclick=()=>{S.data_repo=S.data_repo?0:1;S.offset=0;drc.classList.toggle("on",!!S.data_repo);run();};
+  const crc=$("#codeRepoChip");
+  if(crc) crc.onclick=()=>{S.code_repo=S.code_repo?0:1;S.offset=0;crc.classList.toggle("on",!!S.code_repo);run();};
+  document.querySelectorAll("#qaTiers .chip").forEach(c=>c.onclick=()=>{
+    const tier=c.dataset.qa;
+    const turningOff = S.qa_tier===tier;
+    S.qa_tier = turningOff ? "" : tier;
+    S.offset=0;
+    document.querySelectorAll("#qaTiers .chip").forEach(x=>x.classList.remove("on"));
+    if(!turningOff) c.classList.add("on");
+    run();
+  });
+}
+function setOn(sel,el){document.querySelectorAll(sel+" .chip").forEach(c=>c.classList.remove("on"));el.classList.add("on");}
+
+async function run(){
+  const p = new URLSearchParams({q:S.q,mode:S.mode,year:S.year,limit:S.limit,offset:S.offset});
+  if(S.data_repo) p.set("data_repo","1");
+  if(S.code_repo) p.set("code_repo","1");
+  if(S.qa_tier) p.set("qa_tier",S.qa_tier);
+  const d = await (await fetch("/api/search?"+p)).json();
+  S.total = d.total;
+  $("#count").innerHTML = `<b>${fmt(d.total)}</b> card${d.total!=1?"s":""}`
+    + (S.q?` matching “${esc(S.q)}”`:"") + (S.mode?` · ${S.mode}`:"") + (S.year?` · ${S.year}`:"")
+    + (S.data_repo?` · 📦 with data repository`:"")
+    + (S.code_repo?` · 💻 with code repository`:"")
+    + (S.qa_tier?` · ${S.qa_tier} quality`:"");
+  $("#list").innerHTML = d.results.map(r=>`
+    <div class="card" onclick="openCard('${r.year}','${r.mode}','${r.osti_id}')">
+      <div class="badges"><span class="badge mode">${r.mode}</span><span class="badge">${r.year}</span><span class="badge osti">OSTI ${r.osti_id}</span>${r.has_data_repo?`<span class="badge repo" title="${esc(r.data_repo_hosts)}">📦 ${esc((r.data_repo_hosts||"").split("; ")[0])}</span>`:""}${r.has_code_repo?`<span class="badge code" title="${esc(r.code_repo_hosts)}">💻 ${esc((r.code_repo_hosts||"").split("; ")[0])}</span>`:""}${r.qa_tier?`<span class="badge qa qa-${esc(String(r.qa_tier).toLowerCase())}">${esc(r.qa_tier)}</span>`:""}</div>
+      <div class="t">${esc(r.title)||"(untitled)"}</div>
+      <div class="d">${esc(r.description)||""}</div>
+      ${r.authors?`<div class="a">${esc(r.authors)}</div>`:""}
+    </div>`).join("") || `<p style="color:var(--mut)">No cards match this query.</p>`;
+  const pages = Math.ceil(d.total/S.limit), cur = Math.floor(S.offset/S.limit)+1;
+  $("#pager").innerHTML = d.total>S.limit ? `
+    <button class="btn sec" ${S.offset<=0?"disabled":""} onclick="pg(-1)">‹ Prev</button>
+    <span>Page ${cur} / ${pages}</span>
+    <button class="btn sec" ${cur>=pages?"disabled":""} onclick="pg(1)">Next ›</button>` : "";
+  $("#bulkNote").textContent = `Zips ${fmt(Math.min(d.total,50000))} card(s) for the current filter.`;
+}
+function pg(d){ S.offset=Math.max(0,S.offset+d*S.limit); run(); window.scrollTo(0,0);}
+
+async function openCard(year,mode,id){
+  const c = await (await fetch(`/api/card/${year}/${mode}/${id}`)).json();
+  let src = {pdf:false,md:false,mmd:false};
+  try { src = await (await fetch(`/api/sources/${year}/${id}`)).json(); } catch(e){}
+  const srcBtns = `
+    <h3>Source paper artifacts</h3>
+    <div class="srcgrid">
+      <div class="srcrow"><span class="srclbl"><span class="dot"></span>Original PDF</span>
+        ${src.pdf?`<a class="mini" href="/api/pdf/${year}/${id}" target="_blank">View</a>
+        <a class="mini" href="/api/pdf/${year}/${id}?download=1">⬇ Download</a>`:`<span class="na">not on disk</span>`}</div>
+      <div class="srcrow"><span class="srclbl"><span class="dot"></span>Marker (.md)</span>
+        ${src.md?`<a class="mini" href="/api/render/md/${year}/${id}" target="_blank">View rendered</a>
+        <a class="mini" href="/api/raw/md/${year}/${id}" target="_blank">Raw</a>
+        <a class="mini" href="/api/renderpdf/md/${year}/${id}" target="_blank">PDF</a>
+        <a class="mini" href="/api/raw/md/${year}/${id}?download=1">⬇ .md</a>`:`<span class="na">not yet parsed (Track B)</span>`}</div>
+      <div class="srcrow"><span class="srclbl"><span class="dot"></span>Nougat (.mmd)</span>
+        ${src.mmd?`<a class="mini" href="/api/render/mmd/${year}/${id}" target="_blank">View rendered</a>
+        <a class="mini" href="/api/raw/mmd/${year}/${id}" target="_blank">Raw</a>
+        <a class="mini" href="/api/renderpdf/mmd/${year}/${id}" target="_blank">PDF</a>
+        <a class="mini" href="/api/raw/mmd/${year}/${id}?download=1">⬇ .mmd</a>`:`<span class="na">not on disk</span>`}</div>
+    </div>`;
+  $("#sheet").innerHTML = `
+    <span class="x" onclick="$('#modal').classList.remove('show')">×</span>
+    <h2>${esc(c.title)||"(untitled)"}</h2>
+    <div class="sb"><span class="badge mode">${c.mode}</span><span class="badge">${c.year}</span><span class="badge osti">OSTI ${c.osti_id}</span>
+      ${c.doi&&c.doi!="UNKNOWN"?`<span class="badge">DOI ${esc(c.doi)}</span>`:""}</div>
+    ${c.authors?`<div class="a" style="color:var(--mut);font-size:13px">${esc(c.authors)}</div>`:""}
+    ${srcBtns}
+    <h3>x-Card <span class="toggle-raw" onclick="toggleRaw(this)">⧉ view raw YAML</span></h3>
+    <div id="xcard">${renderXCard(c.yaml)}</div>
+    <pre id="yamlpre" style="display:none">${esc(c.yaml)}</pre>
+    <div class="row">
+      <a class="btn" href="/api/download/${year}/${mode}/${id}">⬇ Download this card</a>
+      ${c.url&&c.url!="UNKNOWN"?`<a class="btn sec" href="${esc(c.url)}" target="_blank">Paper ↗</a>`:""}
+    </div>`;
+  $("#modal").classList.add("show");
+}
+$("#modal").onclick = e => { if(e.target.id==="modal") e.currentTarget.classList.remove("show"); };
+function toggleRaw(el){
+  const pre=document.getElementById("yamlpre"), xc=document.getElementById("xcard");
+  const showRaw = pre.style.display==="none";
+  pre.style.display = showRaw?"block":"none";
+  xc.style.display = showRaw?"none":"block";
+  el.textContent = showRaw?"⧉ view formatted":"⧉ view raw YAML";
+}
+// linkify URLs and emails inside a plain string
+function linkify(s){
+  s = esc(String(s));
+  s = s.replace(/(https?:\/\/[^\s<)]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+  s = s.replace(/\b([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})\b/g, '<a href="mailto:$1">$1</a>');
+  return s;
+}
+function isEmptyVal(v){
+  if(v===null||v===undefined) return true;
+  const s=String(v).trim().toLowerCase();
+  return s===""||s==="unknown"||s==="n/a"||s==="none"||s==="null"||s==="—";
+}
+// render one value (scalar / list / nested object) as HTML
+function renderVal(v){
+  if(isEmptyVal(v)) return '<span class="xc-empty">—</span>';
+  if(Array.isArray(v)){
+    const items=v.filter(x=>!isEmptyVal(x));
+    if(!items.length) return '<span class="xc-empty">—</span>';
+    return "<ul>"+items.map(x=>"<li>"+renderVal(x)+"</li>").join("")+"</ul>";
+  }
+  if(typeof v==="object"){
+    return Object.entries(v).filter(([k,val])=>!isEmptyVal(val))
+      .map(([k,val])=>`<span class="sub">${esc(k)}</span>${renderVal(val)}`).join("");
+  }
+  return linkify(v);
+}
+const KEY_LABEL = k => k.replace(/_/g," ").replace(/\b\w/g,c=>c.toUpperCase());
+function renderXCard(yamlText){
+  let doc;
+  try { doc = jsyaml.load(yamlText); } catch(e){ doc=null; }
+  if(!doc || typeof doc!=="object")
+    return `<pre>${esc(yamlText)}</pre>`;  // fallback: raw if unparseable
+  // flatten a possible single top-level wrapper (e.g. {model_card: {...}})
+  const keys=Object.keys(doc);
+  if(keys.length===1 && doc[keys[0]] && typeof doc[keys[0]]==="object" && !Array.isArray(doc[keys[0]]))
+    doc=doc[keys[0]];
+  const rows=Object.entries(doc)
+    .map(([k,v])=>`<div class="xc-field"><div class="xc-k">${esc(KEY_LABEL(k))}</div><div class="xc-v">${renderVal(v)}</div></div>`)
+    .join("");
+  return rows ? `<div class="xc">${rows}</div>` : `<pre>${esc(yamlText)}</pre>`;
+}
+document.addEventListener("keydown", e=>{ if(e.key==="Escape") $("#modal").classList.remove("show"); });
+
+$("#go").onclick = ()=>{ S.q=$("#q").value.trim(); S.offset=0; run(); };
+$("#q").addEventListener("keydown", e=>{ if(e.key==="Enter"){S.q=e.target.value.trim();S.offset=0;run();}});
+$("#bulkBtn").onclick = ()=>{
+  const p = new URLSearchParams({q:S.q,mode:S.mode,year:S.year});
+  window.location = "/api/bulk?"+p;
+};
+
+loadStats().then(run);
+</script>
+</body>
+</html>

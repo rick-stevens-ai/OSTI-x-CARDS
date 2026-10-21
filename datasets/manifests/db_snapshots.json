@@ -1,0 +1,49 @@
+{
+  "generated": "2026-10-21T12:26:12Z",
+  "note": "Download snapshots from the staging locations below. Large DB (osti_cards) sha omitted \u2014 verify by size+build date. Small DB sha256 computed.",
+  "staging": {
+    "tailnet": "m1 100.86.220.115 \u2014 rsync ~/code/osti-cards-site/data/<db>",
+    "public_funnel": "https://m1-mac-mini.tail2cbb22.ts.net (site only, not DB download)"
+  },
+  "databases": {
+    "osti_cards.sqlite": {
+      "size_bytes": 2733944832,
+      "size_h": "2.73GB",
+      "mtime": "2026-10-21T11:27:14Z",
+      "serves": "all card browse/search; review_md, QA, DOE subjects",
+      "rebuild": "pipeline/extraction/sync_cards.py"
+    },
+    "supercards.sqlite": {
+      "size_bytes": 199925760,
+      "size_h": "199.9MB",
+      "mtime": "2026-10-20T00:40:28Z",
+      "serves": "SuperCard pages + review articles",
+      "rebuild": "pipeline/supercards/supercards_build.py",
+      "sha256": "2aea8ba2e30453a0b9a71f77ae44ac88a049a904a514134fff508f7b762f3119"
+    },
+    "entities.sqlite": {
+      "size_bytes": 140627968,
+      "size_h": "140.6MB",
+      "mtime": "2026-10-19T01:10:10Z",
+      "serves": "entity/alias resolution",
+      "rebuild": "pipeline/enrichment/entity_resolve.py",
+      "sha256": "980874b30108673765f5877073a5e625971976e09aa902428e1f4974d7ab42b9"
+    },
+    "citations.sqlite": {
+      "size_bytes": 22392832,
+      "size_h": "22.4MB",
+      "mtime": "2026-10-17T22:44:52Z",
+      "serves": "OpenAlex cited_by_count per DOI",
+      "rebuild": "pipeline/citations/citation_fetch.py",
+      "sha256": "24add5748a3a25d5a4d800b6559fc59435c2f5e524df8004e9ef912e92e60e62"
+    },
+    "card_enrichment.sqlite": {
+      "size_bytes": 10285056,
+      "size_h": "10.3MB",
+      "mtime": "2026-10-17T19:16:43Z",
+      "serves": "cross-card enrichment overlay",
+      "rebuild": "pipeline/enrichment/enrich_pipeline.py",
+      "sha256": "c979a81278321145902387898a29ae36750ce783a2bd81471042fe7ba54acffe"
+    }
+  }
+}

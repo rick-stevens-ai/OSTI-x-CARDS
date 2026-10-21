@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OSTI SuperCards · Genesis Mission Corpus</title>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+.review-art{font-size:15.5px;line-height:1.66;color:#1e2733;margin:4px 0 8px}
+.review-art h1{font-size:25px;font-weight:800;letter-spacing:-.4px;margin:14px 0 6px}
+.review-art h2{font-size:17px;font-weight:700;color:#0f5bc0;margin:22px 0 8px;padding-bottom:6px;border-bottom:2px solid #d4e8fc}
+.review-art h3{font-size:15px;font-weight:700;margin:16px 0 6px}
+.review-art p{margin:10px 0}
+.review-art li{margin:5px 0}
+.review-art a.cite{color:#1570df;font-weight:600;font-size:12.5px;background:#eaf4fe;padding:1px 6px;border-radius:4px;text-decoration:none}
+details.struct{margin:14px 0;border:1px solid #e3e3e8;border-radius:8px;padding:0 14px;background:#fafafb}
+details.struct summary{cursor:pointer;font-weight:700;padding:11px 0;color:#39424e}
+details.struct[open] summary{border-bottom:1px solid #eef1f5;margin-bottom:10px}
+:root{--ink:#111;--mut:#667;--line:#e3e3e8;--doe:#00205b;--acc:#0a7;--bg:#fafafb}
+*{box-sizing:border-box}
+body{margin:0;font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--bg)}
+.doe{background:var(--doe);color:#fff;font-size:12.5px;padding:6px 18px;display:flex;justify-content:space-between}
+.mast{padding:18px 20px 10px;border-bottom:3px solid var(--doe);background:#fff}
+h1{margin:0;font-size:26px}.lite{color:var(--acc)}
+.tag{color:var(--mut);font-size:13px;margin-top:3px}
+.nav{margin-top:10px}.nav a{display:inline-block;padding:6px 14px;margin-right:6px;border:1px solid var(--line);border-radius:7px;text-decoration:none;color:var(--ink);font-size:13px}
+.nav a.on{background:var(--doe);color:#fff;border-color:var(--doe)}
+.stats{display:flex;gap:26px;padding:14px 20px;flex-wrap:wrap;background:#fff;border-bottom:1px solid var(--line)}
+.stat .num{font-size:24px;font-weight:700}.stat .lbl{font-size:11.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
+.wrap{display:grid;grid-template-columns:230px 1fr;gap:22px;padding:20px;max-width:1280px;margin:0 auto}
+.facet{margin-bottom:18px}.facet h3{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--mut);margin:0 0 7px}
+.chip{display:inline-block;padding:5px 11px;margin:0 5px 6px 0;border:1px solid var(--line);border-radius:16px;background:#fff;cursor:pointer;font-size:13px}
+.chip.on{background:var(--doe);color:#fff;border-color:var(--doe)}.chip .n{color:var(--mut);margin-left:5px;font-size:11px}.chip.on .n{color:#cdd}
+.searchbar{display:flex;gap:8px;margin-bottom:14px}
+.searchbar input{flex:1;padding:9px 12px;border:1px solid var(--line);border-radius:8px;font-size:14px}
+.btn{padding:9px 16px;border:0;background:var(--doe);color:#fff;border-radius:8px;cursor:pointer;font-size:14px}
+.btn.sec{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.meta{color:var(--mut);font-size:13px;margin-bottom:10px}
+.sc{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:11px;cursor:pointer}
+.sc:hover{border-color:var(--doe)}
+.sc .badges{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:7px}
+.badge{font-size:11px;padding:2px 8px;border-radius:12px;background:#eef;color:#224}
+.badge.mode{background:var(--acc);color:#fff}.badge.mem{background:#f0e6ff;color:#527}
+.badge.url{background:#e6f6ec;color:#161}.badge.em{background:#fdeede;color:#852}
+.sc .t{font-size:17px;font-weight:650}.sc .sub{color:var(--mut);font-size:12.5px;margin-top:3px}
+.pager{display:flex;gap:8px;margin-top:14px}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9}
+.modal.on{display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto}
+.sheet{background:#fff;border-radius:12px;max-width:880px;width:100%;padding:28px 34px;max-height:88vh;overflow-y:auto}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:6px 14px;margin:12px 0}
+.kv .k{color:var(--mut);font-size:13px}.kv .v{font-size:14px}
+.dissent{color:#a40;font-size:12px}
+.memlist{columns:3;font-size:12px;margin-top:8px}
+a.ext{color:var(--doe)}
+</style>
+</head>
+<body>
+<div class="doe"><span><b>U.S. Department of Energy</b> · Genesis Mission · Scientific Corpus</span><span>OSTI SuperCards — canonical resource records</span></div>
+<header class="mast">
+  <h1>OSTI <span class="lite">SuperCards</span></h1>
+  <div class="tag">One canonical record per real-world resource — tool · dataset · instrument · facility · model · workflow · agent — synthesized by consensus across every paper that mentions it.</div>
+  <div class="nav"><a href="/">x-Cards</a><a href="/supercards.html" class="on">SuperCards</a></div>
+</header>
+<div class="stats" id="stats"></div>
+<div class="wrap">
+  <aside>
+    <div class="facet"><h3>Resource type</h3><div id="modes"></div></div>
+    <div class="facet"><h3>Shared across</h3><div id="minmem"></div></div>
+  </aside>
+  <main>
+    <div class="searchbar">
+      <input id="q" placeholder="Search resources (e.g. VASP, Advanced Photon Source, LAMMPS)…">
+      <button class="btn" id="go">Search</button>
+    </div>
+    <div class="meta" id="count"></div>
+    <div id="list"></div>
+    <div class="pager" id="pager"></div>
+  </main>
+</div>
+<div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
+<script>
+const $=s=>document.querySelector(s);
+const fmt=n=>(n||0).toLocaleString();
+const esc=s=>(s==null?"":String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const S={q:"",mode:"",min:2,offset:0,limit:50,total:0};
+const modeOrder=["facility","instrument","simulation","model","data","workflow","agent"];
+
+async function loadStats(){
+  const s=await(await fetch("/api/supercards/stats")).json();
+  $("#stats").innerHTML=[
+    ["total",fmt(s.total),"SuperCards"],
+    ["members",fmt(s.total_members),"Member cards consolidated"],
+  ].map(([_,n,l])=>`<div class="stat"><div class="num">${n}</div><div class="lbl">${l}</div></div>`).join("");
+  $("#modes").innerHTML=`<button class="chip on" data-m="">All</button>`+
+    modeOrder.filter(m=>s.by_mode[m]).map(m=>`<button class="chip" data-m="${m}">${m}<span class="n">${fmt(s.by_mode[m])}</span></button>`).join("");
+  $("#minmem").innerHTML=[2,5,10,50,100].map(v=>`<button class="chip${v===2?' on':''}" data-min="${v}">≥${v}</button>`).join("");
+  document.querySelectorAll("#modes .chip").forEach(c=>c.onclick=()=>{setOn("#modes",c);S.mode=c.dataset.m;S.offset=0;run();});
+  document.querySelectorAll("#minmem .chip").forEach(c=>c.onclick=()=>{setOn("#minmem",c);S.min=+c.dataset.min;S.offset=0;run();});
+}
+function setOn(sel,el){document.querySelectorAll(sel+" .chip").forEach(c=>c.classList.remove("on"));el.classList.add("on");}
+
+async function run(){
+  const p=new URLSearchParams({q:S.q,mode:S.mode,min_members:S.min,limit:S.limit,offset:S.offset});
+  const d=await(await fetch("/api/supercards/search?"+p)).json();
+  S.total=d.total;
+  $("#count").textContent=`${fmt(d.total)} SuperCards`+(S.mode?` · ${S.mode}`:"")+(S.q?` · “${S.q}”`:"")+` · shared across ≥${S.min} papers`;
+  $("#list").innerHTML=d.results.map(r=>{
+    let urls=[],ems=[];try{urls=JSON.parse(r.urls||"[]")}catch(e){}try{ems=JSON.parse(r.emails||"[]")}catch(e){}
+    return `<div class="sc" onclick='openSC(${JSON.stringify(r.super_id)})'>
+      <div class="badges"><span class="badge mode">${esc(r.mode)}</span>
+        <span class="badge mem">${fmt(r.member_count)} papers</span>
+        ${r.first_year?`<span class="badge">${r.first_year}–${r.last_year}</span>`:""}
+        ${r.n_with_url?`<span class="badge url">🔗 ${r.n_with_url} w/ URL</span>`:""}
+        ${r.n_with_email?`<span class="badge em">✉ ${r.n_with_email} w/ email</span>`:""}</div>
+      <div class="t">${esc(r.canonical_name)||"(unnamed)"}</div>
+      <div class="sub">${urls.length?esc(urls[0]):""}</div>
+    </div>`;}).join("")||"<p>No SuperCards match.</p>";
+  const pages=Math.ceil(d.total/S.limit),cur=Math.floor(S.offset/S.limit)+1;
+  $("#pager").innerHTML=pages>1?`<button class="btn sec" ${S.offset<=0?"disabled":""} onclick="pg(-1)">‹ Prev</button>
+    <span class="meta">Page ${cur}/${pages}</span>
+    <button class="btn sec" ${cur>=pages?"disabled":""} onclick="pg(1)">Next ›</button>`:"";
+}
+function pg(d){S.offset=Math.max(0,S.offset+d*S.limit);run();window.scrollTo(0,0);}
+
+async function openSC(id){
+  const d=await(await fetch("/api/supercard/"+encodeURIComponent(id))).json();
+  let cons={},urls=[],ems=[],labs=[];
+  try{cons=JSON.parse(d.consensus_json||"{}")}catch(e){}
+  try{urls=JSON.parse(d.urls||"[]")}catch(e){}
+  try{ems=JSON.parse(d.emails||"[]")}catch(e){}
+  try{labs=JSON.parse(d.labs||"[]")}catch(e){}
+  const consRows=Object.entries(cons).map(([f,o])=>
+    `<div class="k">${esc(f)}</div><div class="v">${esc(o.value)} <span class="dissent">(${o.support} papers agree${o.dissent&&o.dissent.length?"; also: "+o.dissent.map(x=>esc(x.value)+"×"+x.support).join(", "):""})</span></div>`).join("");
+  const mem=(d.members||[]).slice(0,120).map(m=>`<a class="ext" href="/api/card/by/${m}" onclick="return false">${m}</a>`).join(" · ");
+  let artHtml="";
+  if(d.review_md && d.review_md.trim()){
+    let h=marked.parse(d.review_md);
+    // chip [OSTI:id] and [OSTI:id, OSTI:id] citations
+    h=h.replace(/\[OSTI:([0-9,\s]+(?:OSTI:[0-9,\s]+)*)\]/g,(m,ids)=>
+      ids.split(',').map(s=>s.replace(/OSTI:/g,'').trim()).filter(Boolean)
+        .map(id=>`<a class="cite" href="https://www.osti.gov/biblio/${id}" target="_blank" rel="noopener">OSTI ${id}</a>`).join(' '));
+    artHtml=`<div class="review-art">${h}</div>`;
+  }
+  const structInner=`<div class="kv">${consRows||"<div class='k'>—</div><div class='v'>No consensus fields</div>"}</div>
+    ${urls.length?`<h3>URLs observed across member papers</h3><ul>${urls.map(u=>`<li><a class="ext" href="${esc(u)}" target="_blank" rel="noopener">${esc(u)}</a></li>`).join("")}</ul>`:""}
+    ${ems.length?`<h3>Contact emails observed</h3><div>${ems.map(esc).join(" · ")}</div>`:""}
+    ${labs.length?`<h3>Labs</h3><div>${labs.map(esc).join(" · ")}</div>`:""}
+    <h3>Member papers (${d.member_count})</h3><div class="memlist">${mem}${d.members&&d.members.length>120?" …":""}</div>`;
+  $("#sheet").innerHTML=`<div class="badges"><span class="badge mode">${esc(d.mode)}</span><span class="badge mem">${fmt(d.member_count)} papers</span>${d.first_year?`<span class="badge">${d.first_year}–${d.last_year}</span>`:""}</div>
+    ${artHtml || `<h2 style="margin:8px 0">${esc(d.canonical_name)}</h2>`}
+    <details class="struct"${artHtml?"":" open"}><summary>Structured data · consensus fields · URLs · emails · member papers</summary>${structInner}</details>
+    <p style="margin-top:14px"><button class="btn sec" onclick="document.getElementById('modal').classList.remove('on')">Close</button></p>`;
+  $("#modal").classList.add("on");
+}
+$("#modal").onclick=e=>{if(e.target.id==="modal")e.currentTarget.classList.remove("on")};
+$("#go").onclick=()=>{S.q=$("#q").value.trim();S.offset=0;run();};
+$("#q").addEventListener("keydown",e=>{if(e.key==="Enter"){S.q=$("#q").value.trim();S.offset=0;run();}});
+loadStats().then(run);
+</script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+{
+  "description": "DOE OSTI subject-code \u2192 science-domain mapping used to classify cards. Codes from catalog subjects_json.",
+  "top_code_to_domain": {
+    "Biology": [
+      "59",
+      "60",
+      "62"
+    ],
+    "HEP": [
+      "72",
+      "43"
+    ],
+    "NP": [
+      "73",
+      "46",
+      "38"
+    ],
+    "Fusion": [
+      "70"
+    ],
+    "Materials": [
+      "36",
+      "75",
+      "77"
+    ],
+    "Chemistry": [
+      "37"
+    ],
+    "Climate": [
+      "54"
+    ],
+    "Computer Science": [
+      "97"
+    ],
+    "Earth Science": [
+      "58"
+    ]
+  },
+  "subtopic_matched": {
+    "Geophysics": "matched within Geosciences (58) subtopics",
+    "Solar Physics": "matched within Astrophysics subtopics"
+  },
+  "rule": "Domain labels come from authoritative DOE subject codes, NOT LLM free-text classification."
+}
