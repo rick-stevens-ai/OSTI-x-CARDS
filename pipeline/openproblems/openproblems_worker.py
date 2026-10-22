@@ -161,6 +161,8 @@ def _looks_like_math(inner):
         return False
     return bool(re.search(r'[\\^_{}]', inner)) or bool(re.search(r'[=<>+\-*/]', inner))
 
+_ESC_PLAIN=False  # when True, esc() escapes ALL $ as text (no inline math) — used by the compile fallback
+
 def esc(s):
     if s is None: return ""
     parts=re.split(r'(\$[^$]*\$)', str(s))
@@ -172,10 +174,10 @@ def esc(s):
             seg=seg.replace(a,b)
         return seg
     for seg in parts:
-        if seg.startswith('$') and seg.endswith('$') and len(seg)>=2 and _looks_like_math(seg[1:-1]):
+        if (not _ESC_PLAIN) and seg.startswith('$') and seg.endswith('$') and len(seg)>=2 and _looks_like_math(seg[1:-1]):
             out.append(seg)              # keep as inline math
         else:
-            out.append(esc_text(seg))    # escape as text (incl. lone/currency $)
+            out.append(esc_text(seg))    # escape as text (incl. lone/currency/unbalanced $)
     return ''.join(out)
 
 CATCOLOR={"Theory":"catTheory","Modeling and Simulation":"catModel",
@@ -308,8 +310,14 @@ def run(shard, nshard, limit):
             tex=build_tex(pid, "", title, probs)
             ok,err=compile_pdf(pid, tex)
             if not ok:
-                # fallback: retry text-only (drop display math that broke tectonic)
-                tex2=build_tex(pid, "", title, probs, drop_math=True)
+                # fallback: retry text-only — drop display math AND escape ALL inline $
+                # (handles unbalanced/stray $ in statement text, e.g. "$17/\text{kW}$)").
+                global _ESC_PLAIN
+                _ESC_PLAIN=True
+                try:
+                    tex2=build_tex(pid, "", title, probs, drop_math=True)
+                finally:
+                    _ESC_PLAIN=False
                 ok,err2=compile_pdf(pid, tex2)
                 if ok:
                     c.execute("UPDATE papers SET status='done',n_problems=?,done_at=?,err='math-dropped' WHERE osti_id=?",
