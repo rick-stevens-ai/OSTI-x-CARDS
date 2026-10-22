@@ -1,0 +1,133 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[T1]{fontenc}\usepackage[utf8]{inputenc}
+\usepackage[margin=0.85in,headheight=14pt]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{lmodern}\usepackage{microtype}
+\usepackage{xcolor}\usepackage[most]{tcolorbox}
+\usepackage{fancyhdr}\usepackage{enumitem}\usepackage[hidelinks]{hyperref}
+\definecolor{ink}{HTML}{14243A}\definecolor{accent}{HTML}{8C4F2B}
+\definecolor{pale}{HTML}{EEF3FA}
+\definecolor{catTheory}{HTML}{6A2E8C}\definecolor{catModel}{HTML}{1B6E8C}
+\definecolor{catExp}{HTML}{8C4F2B}\definecolor{catObs}{HTML}{2E6E3A}
+\setlength{\parindent}{0pt}\setlength{\parskip}{3pt}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\small\color{ink}\textbf{OSTI Open-Problems Atlas}}
+\fancyhead[R]{\small\color{ink}OSTI:2449636}
+\fancyfoot[C]{\small\color{ink}\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\newtcolorbox{opbox}[1]{enhanced,breakable,colback=pale,colframe=ink,
+ fonttitle=\bfseries\color{white},coltitle=white,
+ attach boxed title to top left={xshift=8pt,yshift=-8pt},
+ boxed title style={colback=ink,sharp corners},title={#1},arc=1.5mm,boxrule=0.7pt,
+ top=10pt}
+\newtcolorbox{mathcap}{colback=white,colframe=accent!60,boxrule=0.4pt,arc=0.5mm,
+ left=4pt,right=4pt,top=2pt,bottom=2pt}
+\begin{document}
+\begin{center}
+{\LARGE\bfseries\color{ink} Open Problems}\\[4pt]
+{\large\color{accent} Strangeness-correlations on the pseudocritical line in (2+1)-flavor QCD}\\[6pt]
+{\small\color{ink} OSTI 2449636 · 2024 · 8 open problems extracted}\\[2pt]
+{\footnotesize Categories: \textcolor{catTheory}{Theory} · \textcolor{catModel}{Modeling \& Simulation} · \textcolor{catExp}{Experiment} · \textcolor{catObs}{Observation}\quad|\quad ATLAS impact weights: S35 E30 X20 A15}
+\end{center}
+\vspace{4pt}
+\hrule
+\vspace{8pt}
+
+\begin{opbox}{Problem 1 \textnormal{\small(\textcolor{catExp}{\textbf{Experiment}} · mentioned)}}
+What is the origin of the significant discrepancy between lattice QCD predictions for $\chi_{11}^{BS}/\chi_2^S$ on the pseudocritical line and the preliminary STAR measurements of this ratio for beam energies $\sqrt{s_{NN}} < 39$ GeV? Specifically, is the tension due to non-equilibrium effects at freeze-out, insufficient control of experimental proxies, or missing physics in the QCD Taylor expansion at large $\hat{\mu}_B$?
+\vspace{2pt}\begin{mathcap}\[\frac{\chi_{11}^{BS}(T_{pc}(\mu_B),\mu_B)}{\chi_2^S(T_{pc}(\mu_B),\mu_B)} \stackrel{?}{=} \left.\frac{\chi_{11}^{BS}}{\chi_2^S}\right|_{\rm STAR},\quad \sqrt{s_{NN}} < 39\;\text{GeV}\]\end{mathcap}
+\vspace{3pt}
+{\small\textit{Category rationale.} Resolving whether the discrepancy is experimental (proxy systematics, non-equilibrium freeze-out) or theoretical requires dedicated experimental measurements with improved proxy control and final (non-preliminary) STAR data.}
+\vspace{3pt}
+
+{\footnotesize\textbf{ATLAS impact} (weighted 83.0/100):\quad S\,5/5 \quad E\,4/5 \quad X\,3/5 \quad A\,4/5\\
+\textit{Rationale.} Resolving this tension is central to validating QCD thermodynamics as a description of heavy-ion freeze-out and would directly impact the interpretation of the entire RHIC BES-II program.}
+\end{opbox}
+
+
+\begin{opbox}{Problem 2 \textnormal{\small(\textcolor{catModel}{\textbf{Modeling and Simulation}} · mentioned)}}
+Can statistically well-controlled higher-order (beyond NNLO, i.e., beyond $\mathcal{O}(\hat{\mu}_B^4)$) Taylor series for second-order cumulants such as $\chi_{11}^{BS}$ and $\chi_2^B$ be computed on the lattice to extend reliable comparisons with experiment to $\hat{\mu}_B \gtrsim 1.5$ (corresponding to $\sqrt{s_{NN}} \lesssim 17.3$ GeV)?
+\vspace{2pt}\begin{mathcap}\[\chi_{11}^{BS}(T,\vec{\mu}) = \sum_{n=0}^{N} \frac{\hat{\mu}_B^{2n}}{(2n)!}\,c_{2n}^{BS}(T) + \mathcal{O}(\hat{\mu}_B^{2N+2}),\quad N > 2\]\end{mathcap}
+\vspace{3pt}
+{\small\textit{Category rationale.} Extending the Taylor expansion to higher orders requires new large-scale lattice QCD simulations with high statistics to compute sixth- and eighth-order susceptibilities entering the NNNLO coefficients.}
+\vspace{3pt}
+
+{\footnotesize\textbf{ATLAS impact} (weighted 78.0/100):\quad S\,4/5 \quad E\,5/5 \quad X\,2/5 \quad A\,4/5\\
+\textit{Rationale.} Higher-order continuum-extrapolated Taylor coefficients are the primary computational bottleneck blocking quantitative QCD comparisons with low-energy RHIC data, making this a key enabling calculation.}
+\end{opbox}
+
+
+\begin{opbox}{Problem 3 \textnormal{\small(\textcolor{catModel}{\textbf{Modeling and Simulation}} · mentioned)}}
+How accurately can the chemical freeze-out parameters $(T_f, \mu_B^f, \mu_S^f)$ be determined from lattice QCD for $\sqrt{s_{NN}} < 11.5$ GeV, where the current NLO and NNLO Taylor series for $R_{12}^B = \chi_1^B/\chi_2^B$ lose statistical control and the experimental $R_{12}^p$ exceeds unity?
+\vspace{2pt}\begin{mathcap}\[R_{12}^B(T_{pc}(\mu_B^f),\hat{\mu}_B^f) = \frac{\chi_1^B}{\chi_2^B}\bigg|_{T_{pc}} \stackrel{!}{=} R_{12}^p(\sqrt{s_{NN}}),\quad \sqrt{s_{NN}} < 11.5\;\text{GeV}\]\end{mathcap}
+\vspace{3pt}
+{\small\textit{Category rationale.} Answering this requires either higher-order lattice Taylor expansions or alternative resummation methods (e.g., Padé approximants or imaginary-$\mu$ simulations) to extend the reach of QCD thermodynamics to larger $\hat{\mu}_B$.}
+\vspace{3pt}
+
+{\footnotesize\textbf{ATLAS impact} (weighted 69.0/100):\quad S\,4/5 \quad E\,4/5 \quad X\,2/5 \quad A\,3/5\\
+\textit{Rationale.} Reliable freeze-out parameter extraction at low beam energies is essential for mapping the QCD phase diagram and searching for the critical endpoint, making this a high-priority simulation challenge.}
+\end{opbox}
+
+
+\begin{opbox}{Problem 4 \textnormal{\small(\textcolor{catTheory}{\textbf{Theory}} · implied)}}
+To what extent do isospin-symmetry violations in QCD at nonzero temperature and density invalidate the sum rule $2\chi_{11}^{QS}/\chi_2^S - \chi_{11}^{BS}/\chi_2^S = 1$ for realistic heavy-ion conditions ($n_Q/n_B = 0.4$) at $\hat{\mu}_B > 2$, i.e., for $\sqrt{s_{NN}} \lesssim 7.7$ GeV?
+\vspace{2pt}\begin{mathcap}\[\Delta^{BQS}(T,\vec{\mu}) = \chi_2^S\left(2\frac{\chi_{11}^{QS}}{\chi_2^S} - \frac{\chi_{11}^{BS}}{\chi_2^S} - 1\right) \stackrel{?}{\ll} \chi_2^S,\quad \hat{\mu}_B > 2\]\end{mathcap}
+\vspace{3pt}
+{\small\textit{Category rationale.} This is a formal question about the analytic structure of QCD thermodynamics under isospin breaking, requiring theoretical analysis of the $\mu_Q$-dependent correction $\Delta^{BQS}$ at large $\hat{\mu}_B$.}
+\vspace{3pt}
+
+{\footnotesize\textbf{ATLAS impact} (weighted 42.0/100):\quad S\,2/5 \quad E\,3/5 \quad X\,1/5 \quad A\,2/5\\
+\textit{Rationale.} While violations are shown to be below 0.5\% for $\hat{\mu}_B \leq 2$, establishing their magnitude at larger $\hat{\mu}_B$ is needed to validate the use of the sum rule as a conversion tool at the lowest BES energies.}
+\end{opbox}
+
+
+\begin{opbox}{Problem 5 \textnormal{\small(\textcolor{catExp}{\textbf{Experiment}} · mentioned)}}
+Can an accurate experimental determination of $\chi_{11}^{BS}$ be achieved from particle yields in heavy-ion collisions, given the uncontrolled feed-down contributions from higher kaon resonances and unknown decay channels of additional strange hadrons not listed in the PDG?
+\vspace{2pt}\begin{mathcap}\[\chi_{11}^{BS}\big|_{\rm exp} = \chi_{11}^{BS}\big|_{\rm yields} + \delta_{\rm feed-down} + \delta_{\rm resonances} \stackrel{?}{\approx} \chi_{11}^{BS}\big|_{\rm QCD}\]\end{mathcap}
+\vspace{3pt}
+{\small\textit{Category rationale.} This is an experimental question about achieving sufficient control over feed-down corrections and resonance contributions in measurements of strange-particle yields at colliders such as ALICE and STAR.}
+\vspace{3pt}
+
+{\footnotesize\textbf{ATLAS impact} (weighted 62.0/100):\quad S\,3/5 \quad E\,4/5 \quad X\,2/5 \quad A\,3/5\\
+\textit{Rationale.} Achieving experimental control over $\chi_{11}^{BS}$ from particle yields is a prerequisite for using strangeness-baryon correlations as a reliable thermometer and phase-diagram probe.}
+\end{opbox}
+
+
+\begin{opbox}{Problem 6 \textnormal{\small(\textcolor{catModel}{\textbf{Modeling and Simulation}} · implied)}}
+Why do HRG model calculations based on the PDG-HRG hadron list fail to describe lattice QCD results for $\chi_{11}^{BS}/\chi_2^S$ already at $T \gtrsim 130$ MeV, and can the QMHRG2020 list be systematically improved to maintain agreement with QCD on the pseudocritical line for $\hat{\mu}_B \gtrsim 1$?
+\vspace{2pt}\begin{mathcap}\[\frac{\chi_{11}^{BS}}{\chi_2^S}\bigg|_{\rm QMHRG2020} - \frac{\chi_{11}^{BS}}{\chi_2^S}\bigg|_{\rm QCD} \to 0 \;\text{ for }\; \hat{\mu}_B \lesssim 1,\quad \text{but } \neq 0 \text{ for } \hat{\mu}_B \gtrsim 1\]\end{mathcap}
+\vspace{3pt}
+{\small\textit{Category rationale.} Improving the HRG model requires identifying and including missing strange resonances through a combination of lattice QCD spectroscopy and phenomenological modeling, which is a computational and modeling task.}
+\vspace{3pt}
+
+{\footnotesize\textbf{ATLAS impact} (weighted 60.0/100):\quad S\,3/5 \quad E\,3/5 \quad X\,3/5 \quad A\,3/5\\
+\textit{Rationale.} Understanding the breakdown of HRG models at moderate $\hat{\mu}_B$ has broad implications for the modeling of hadronic matter in heavy-ion collisions and neutron star merger simulations.}
+\end{opbox}
+
+
+\begin{opbox}{Problem 7 \textnormal{\small(\textcolor{catModel}{\textbf{Modeling and Simulation}} · implied)}}
+What is the precise value of the curvature coefficient $\kappa_4$ of the pseudocritical line $T_{pc}(\mu_B) = T_{pc,0}[1 - \kappa_2\hat{\mu}_B^2 + \kappa_4\hat{\mu}_B^4]$, and does it remain consistent with zero when strangeness-sector observables such as $\chi_{11}^{BS}/\chi_2^S$ are used as an independent probe of $T_{pc}(\mu_B)$?
+\vspace{2pt}\begin{mathcap}\[T_{pc}(\mu_B) = T_{pc,0}\left[1 - \kappa_2\hat{\mu}_B^2 + \kappa_4\hat{\mu}_B^4\right],\quad \kappa_4 \stackrel{?}{=} 0\]\end{mathcap}
+\vspace{3pt}
+{\small\textit{Category rationale.} Determining $\kappa_4$ with sufficient precision to distinguish it from zero requires high-statistics lattice simulations and potentially new observables as independent constraints on the pseudocritical line.}
+\vspace{3pt}
+
+{\footnotesize\textbf{ATLAS impact} (weighted 63.0/100):\quad S\,4/5 \quad E\,3/5 \quad X\,2/5 \quad A\,3/5\\
+\textit{Rationale.} A nonzero $\kappa_4$ would alter the shape of the pseudocritical line at large $\mu_B$ and affect the location of the conjectured QCD critical endpoint, making its precise determination scientifically significant.}
+\end{opbox}
+
+
+\begin{opbox}{Problem 8 \textnormal{\small(\textcolor{catObs}{\textbf{Observation}} · implied)}}
+Can the correlation between light and strange quark-number densities, $\chi_{11}^{us}(T,\hat{\mu}_B)/\chi_2^S(T,\hat{\mu}_B)$, be directly measured experimentally as a function of beam energy, and does its decrease with increasing $\hat{\mu}_B$ on the pseudocritical line reflect the growing importance of multi-strange baryon contributions?
+\vspace{2pt}\begin{mathcap}\[\frac{\chi_{11}^{us}(T,\hat{\mu}_B)}{\chi_2^S(T,\hat{\mu}_B)} \simeq -\frac{1}{2}\left(1 + 3\frac{\chi_{11}^{BS}(T,\hat{\mu}_B)}{\chi_2^S(T,\hat{\mu}_B)}\right)\]\end{mathcap}
+\vspace{3pt}
+{\small\textit{Category rationale.} Testing whether the predicted decrease of $\chi_{11}^{us}/\chi_2^S$ with $\hat{\mu}_B$ is observable requires analyzing strange and light hadron yields across beam energies in the RHIC BES program, which is an observational task.}
+\vspace{3pt}
+
+{\footnotesize\textbf{ATLAS impact} (weighted 47.0/100):\quad S\,3/5 \quad E\,2/5 \quad X\,2/5 \quad A\,2/5\\
+\textit{Rationale.} Experimentally accessing the light-strange quark correlation would provide a novel probe of the quark-hadron transition and the role of multi-strange baryons at moderate baryon density.}
+\end{opbox}
+
+\vfill
+{\footnotesize\color{ink}\textit{Open problems extracted (mentioned or implied) from the source paper by LLM; categorized as Theory / Modeling \& Simulation / Experiment / Observation; scored on the ATLAS impact rubric (scientific significance, enabling value, cross-field reach, advance magnitude). Grounded in the source text; no results claimed.}}
+\end{document}
