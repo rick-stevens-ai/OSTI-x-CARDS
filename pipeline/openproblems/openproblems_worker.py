@@ -118,10 +118,23 @@ Return STRICT JSON ONLY:
 Output JSON only."""
 
 def _repair_json_escapes(s):
-    # LLMs emit raw LaTeX backslashes (\sum, \tau, \mu) inside JSON strings, which
-    # are invalid JSON escapes. Escape any backslash NOT part of a valid JSON escape
-    # (\" \\ \/ \b \f \n \r \t \uXXXX).
-    return re.sub(r'\\(?!["\\/bfnrtu])', r'\\\\', s)
+    # LLMs emit raw LaTeX backslashes (\sum, \tau, \upsilon, \uparrow) inside JSON
+    # strings = invalid JSON escapes. Walk left-to-right: a backslash that begins a
+    # VALID escape (\" \\ \/ \b \f \n \r \t or \uXXXX) is passed through together with
+    # the char(s) it escapes (so a real \\ pair is consumed atomically); any other
+    # backslash is doubled. This avoids mis-handling genuine \\ followed by a letter.
+    out=[]; i=0; n=len(s)
+    while i<n:
+        c=s[i]
+        if c=='\\' and i+1<n:
+            nxt=s[i+1]
+            if nxt in '"\\/bfnrt':
+                out.append(s[i:i+2]); i+=2; continue
+            if nxt=='u' and i+6<=n and re.match(r'[0-9a-fA-F]{4}', s[i+2:i+6]):
+                out.append(s[i:i+6]); i+=6; continue
+            out.append('\\\\'); i+=1; continue
+        out.append(c); i+=1
+    return ''.join(out)
 
 def parse_json(t):
     t=re.sub(r'<think>.*?</think>','',t,flags=re.S).strip()
