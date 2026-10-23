@@ -327,7 +327,10 @@ def run(shard, nshard, limit):
             data=parse_json(out)
             probs=data.get("problems",[])
             if not isinstance(probs,list) or not probs:
-                c.execute("UPDATE papers SET status='failed',err='no-problems',done_at=? WHERE osti_id=?",(time.time(),pid)); c.commit(); continue
+                # zero open problems is a VALID content outcome for non-research docs
+                # (memorials, errata, front-matter) — record as 'skip', not 'failed',
+                # so it doesn't pollute the failure count at corpus scale.
+                c.execute("UPDATE papers SET status='skip',err='no-problems',done_at=? WHERE osti_id=?",(time.time(),pid)); c.commit(); continue
             # year from md dir metadata unknown here -> leave blank; m1 join fills it
             rec={"paper":{"osti_id":pid,"title":title},"problems":probs,"model":MODEL}
             json.dump(rec, open(os.path.join(OUT_JSON,f"{pid}.json"),"w"), indent=1)
