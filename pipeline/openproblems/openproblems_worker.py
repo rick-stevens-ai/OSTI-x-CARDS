@@ -117,6 +117,21 @@ Return STRICT JSON ONLY:
 "cross_field_reach":0,"advance_magnitude":0,"score_rationale":"..."}}]}}
 Output JSON only."""
 
+def _protect_latex_escapes(s):
+    # CRITICAL: \beta = \b + "eta", and \b is a VALID JSON escape (backspace 0x08),
+    # so json.loads SUCCEEDS but silently destroys the LaTeX command (\beta -> 0x08+"eta").
+    # Same collision for \frac(\f) \rho(\r) \tau/\theta(\t) \nu/\nabla(\n) \upsilon(\u).
+    # We can't blanket-double these: a real JSON newline (\n + letter) is lexically
+    # identical to \nu. SAFE SCOPE: only inside $...$ math spans, where real whitespace
+    # escapes never occur but LaTeX commands do. Double the backslash there so the
+    # command survives json.loads as a literal.
+    def fix_span(m):
+        inner=m.group(0)
+        inner=re.sub(r'\\([bfnrt])(?=[a-zA-Z])', r'\\\\\1', inner)
+        inner=re.sub(r'\\u(?![0-9a-fA-F]{4})(?=[a-zA-Z])', r'\\\\u', inner)
+        return inner
+    return re.sub(r'\$[^$]*\$', fix_span, s)
+
 def _repair_json_escapes(s):
     # LLMs emit raw LaTeX backslashes (\sum, \tau, \upsilon, \uparrow) inside JSON
     # strings = invalid JSON escapes. Walk left-to-right: a backslash that begins a
@@ -143,6 +158,9 @@ def parse_json(t):
     i=t.find('{'); j=t.rfind('}')
     if i<0 or j<0: raise ValueError("no json object")
     frag=t[i:j+1]
+    # protect LaTeX commands whose prefix is a valid JSON escape (\beta, \frac, \nu...)
+    # BEFORE json.loads silently decodes them to control chars inside $...$ spans.
+    frag=_protect_latex_escapes(frag)
     try:
         return json.loads(frag)
     except json.JSONDecodeError:
@@ -163,9 +181,15 @@ def _looks_like_math(inner):
 
 _ESC_PLAIN=False  # when True, esc() escapes ALL $ as text (no inline math) — used by the compile fallback
 
+_CTRL_RE=re.compile(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]')
+
 def esc(s):
     if s is None: return ""
-    parts=re.split(r'(\$[^$]*\$)', str(s))
+    # Strip raw control bytes first: LLMs sometimes emit LaTeX \beta/\f.. as JSON \b \f \r,
+    # which json.loads decodes to literal control chars (0x08 etc.) that break tectonic
+    # ("invalid character"). Drop them (newline/tab preserved).
+    s=_CTRL_RE.sub('', str(s))
+    parts=re.split(r'(\$[^$]*\$)', s)
     out=[]
     def esc_text(seg):
         for a,b in [('\\','\\textbackslash{}'),('&','\\&'),('%','\\%'),('#','\\#'),
@@ -324,7 +348,7 @@ def run(shard, nshard, limit):
                               (len(probs), time.time(), pid)); c.commit()
                     done+=1; continue
                 c.execute("UPDATE papers SET status='failed',err=?,n_problems=?,done_at=? WHERE osti_id=?",
-                          ("pdf:"+err[:200], len(probs), time.time(), pid)); c.commit(); continue
+                          ("pdf2:"+err2[:200], len(probs), time.time(), pid)); c.commit(); continue
             c.execute("UPDATE papers SET status='done',n_problems=?,done_at=?,err=NULL WHERE osti_id=?",
                       (len(probs), time.time(), pid)); c.commit()
             done+=1
