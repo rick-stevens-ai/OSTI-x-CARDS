@@ -321,10 +321,21 @@ def run(shard, nshard, limit):
                 c.execute("UPDATE papers SET status='failed',err='no-md',done_at=? WHERE osti_id=?",(time.time(),pid)); c.commit(); continue
             text=open(md, errors="replace").read()
             title=read_title(text, pid)
-            ep=random.choice(live)
             prompt=PROMPT_TMPL.format(pid=pid, title=title, body=text[:MAX_CHARS])
-            out=chat(ep, prompt)
-            data=parse_json(out)
+            # bounded retry: LLM at temp>0 occasionally emits malformed JSON (missing
+            # comma/delimiter) that no escape-repair can fix — re-roll on a fresh endpoint.
+            data=None; last_err=None
+            for attempt in range(3):
+                ep=random.choice(live)
+                try:
+                    out=chat(ep, prompt)
+                    data=parse_json(out)
+                    break
+                except Exception as pe:
+                    last_err=pe; continue
+            if data is None:
+                c.execute("UPDATE papers SET status='failed',err=?,done_at=? WHERE osti_id=?",
+                          (str(last_err)[:200], time.time(), pid)); c.commit(); continue
             probs=data.get("problems",[])
             if not isinstance(probs,list) or not probs:
                 # zero open problems is a VALID content outcome for non-research docs
